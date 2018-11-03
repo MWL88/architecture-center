@@ -1,5 +1,5 @@
 ---
-title: Data partitioning guidance
+title: Data partitioning strategies
 description: Guidance for how to separate partitions to be managed and accessed separately.
 author: dragon119
 ms.date: 11/03/2018
