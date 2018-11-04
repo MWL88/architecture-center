@@ -2,7 +2,7 @@
 title: Data partitioning guidance
 description: Guidance for how to separate partitions to be managed and accessed separately.
 author: dragon119
-ms.date: 11/03/2018
+ms.date: 11/04/2018
 
 ---
 # Data partitioning
@@ -227,40 +227,7 @@ The following design patterns might be relevant to your scenario:
 
 - Learn about partitioning strategies for specific Azure services. See [Data partitioning strategies](./data-partitioning-strategies.md)
 
-[Availability and consistency in Event Hubs]: /azure/event-hubs/event-hubs-availability-and-consistency
-[azure-limits]: /azure/azure-subscription-service-limits
-[Azure Content Delivery Network]: /azure/cdn/cdn-overview
-[Azure Redis Cache]: https://azure.microsoft.com/services/cache/
 [Azure Storage Scalability and Performance Targets]: /azure/storage/storage-scalability-targets
-[Azure Storage Table Design Guide]: /azure/storage/storage-table-design-guide
-[Building a Polyglot Solution]: https://msdn.microsoft.com/library/dn313279.aspx
-[cosmos-db-ru]: /azure/cosmos-db/request-units
-[Data Access for Highly-Scalable Solutions: Using SQL, NoSQL, and Polyglot Persistence]: https://msdn.microsoft.com/library/dn271399.aspx
-[Data consistency primer]: https://aka.ms/Data-Consistency-Primer
-[Data Partitioning Guidance]: https://msdn.microsoft.com/library/dn589795.aspx
-[Data Types]: https://redis.io/topics/data-types
-[cosmosdb-sql-api]: /azure/cosmos-db/sql-api-introduction
-[Elastic Database features overview]: /azure/sql-database/sql-database-elastic-scale-introduction
-[event-hubs]: /azure/event-hubs
-[Federations Migration Utility]: https://code.msdn.microsoft.com/vstudio/Federations-Migration-ce61e9c1
-[guidelines and recommendations for reliable collections in Azure Service Fabric]: /azure/service-fabric/service-fabric-reliable-services-reliable-collections-guidelines
 [Index Table Pattern]: ../patterns/index-table.md
 [Materialized View Pattern]: ../patterns/materialized-view.md
-[Multi-shard querying]: /azure/sql-database/sql-database-elastic-scale-multishard-querying
-[Overview of Azure Service Fabric]: /azure/service-fabric/service-fabric-overview
-[Partition Service Fabric reliable services]: /azure/service-fabric/service-fabric-concepts-partitioning
-[Partitioning: how to split data among multiple Redis instances]: https://redis.io/topics/partitioning
-[Performing Entity Group Transactions]: https://msdn.microsoft.com/library/azure/dd894038.aspx
-[Redis cluster tutorial]: https://redis.io/topics/cluster-tutorial
-[Running Redis on a CentOS Linux VM in Azure]: https://blogs.msdn.microsoft.com/tconte/2012/06/08/running-redis-on-a-centos-linux-vm-in-windows-azure/
-[Scaling using the Elastic Database split-merge tool]: /azure/sql-database/sql-database-elastic-scale-overview-split-and-merge
-[Using Azure Content Delivery Network]: /azure/cdn/cdn-create-new-endpoint
-[Service Bus quotas]: /azure/service-bus-messaging/service-bus-quotas
-[service-fabric-reliable-collections]: /azure/service-fabric/service-fabric-reliable-services-reliable-collections
-[Service limits in Azure Search]:  /azure/search/search-limits-quotas-capacity
 [Sharding pattern]: ../patterns/sharding.md
-[Supported Data Types (Azure Search)]:  https://msdn.microsoft.com/library/azure/dn798938.aspx
-[Transactions]: https://redis.io/topics/transactions
-[What is Event Hubs?]: /azure/event-hubs/event-hubs-what-is-event-hubs
-[What is Azure Search?]: /azure/search/search-what-is-azure-search
-[What is Azure SQL Database?]: /azure/sql-database/sql-database-technical-overview
