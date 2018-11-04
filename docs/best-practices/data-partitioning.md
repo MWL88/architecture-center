@@ -107,36 +107,45 @@ For example, if you use Azure table storage, there is a limit to the volume of r
 
 ## Designing partitions for query performance
 
-Query performance can often be boosted by using smaller data sets and by running parallel queries. Each partition should contain a small proportion of the entire data set. This reduction in volume can improve the performance of queries. However, partitioning is not an alternative for designing and configuring a database appropriately. For example, make sure that you have the necessary indexes in place if you are using a relational database.
+Query performance can often be boosted by using smaller data sets and by running parallel queries. Each partition should contain a small proportion of the entire data set. This reduction in volume can improve the performance of queries. However, partitioning is not an alternative for designing and configuring a database appropriately. For example, make sure that you have the necessary indexes in place.
 
 Follow these steps when designing partitions for query performance:
 
 1. Examine the application requirements and performance:
-   * Use the business requirements to determine the critical queries that must always perform quickly.
+   * Use business requirements to determine the critical queries that must always perform quickly.
    * Monitor the system to identify any queries that perform slowly.
-   * Establish which queries are performed most frequently. A single instance of each query might have minimal cost, but the cumulative consumption of resources could be significant. It might be beneficial to separate the data that's retrieved by these queries into a distinct partition, or even a cache.
+   * Find which queries are performed most frequently. Even if a single query has a minimal cost, the cumulative resource consumption could be significant. 
+
 2. Partition the data that is causing slow performance:
    * Limit the size of each partition so that the query response time is within target.
-   * Design the shard key so that the application can easily find the partition if you are implementing horizontal partitioning. This prevents the query from having to scan through every partition.
+   * If you use horizontal partitioning, design the shard key so that the application can easily select the right partition. This prevents the query from having to scan through every partition.
    * Consider the location of a partition. If possible, try to keep data in partitions that are geographically close to the applications and users that access it.
+
 3. If an entity has throughput and query performance requirements, use functional partitioning based on that entity. If this still doesn't satisfy the requirements, apply horizontal partitioning as well. In most cases a single partitioning strategy will suffice, but in some cases it is more efficient to combine both strategies.
-4. Consider using asynchronous queries that run in parallel across partitions to improve performance.
+
+4. Consider running queries in parallel across partitions to improve performance.
 
 ## Designing partitions for availability
-Partitioning data can improve the availability of applications by ensuring that the entire dataset does not constitute a single point of failure and that individual subsets of the dataset can be managed independently. Replicating partitions that contain critical data can also improve availability.
+Partitioning data can improve the availability of applications by ensuring that the entire dataset does not constitute a single point of failure and that individual subsets of the dataset can be managed independently. 
 
-When designing and implementing partitions, consider the following factors that affect availability:
+Consider the following factors that affect availability:
 
-* **How critical the data is to business operations**. Some data might include critical business information such as invoice details or bank transactions. Other data might include less critical operational data, such as log files, performance traces, and so on. After identifying each type of data, consider:
-  * Storing critical data in highly-available partitions with an appropriate backup plan.
-  * Establishing separate management and monitoring mechanisms or procedures for the different criticalities of each dataset. Place data that has the same level of criticality in the same partition so that it can be backed up together at an appropriate frequency. For example, partitions that hold data for bank transactions might need to be backed up more frequently than partitions that hold logging or trace information.
-* **How individual partitions can be managed**. Designing partitions to support independent management and maintenance provides several advantages. For example:
-  * If a partition fails, it can be recovered independently without affecting instances of applications that access data in other partitions.
-  * Partitioning data by geographical area allows scheduled maintenance tasks to occur at off-peak hours for each location. Ensure that partitions are not too big to prevent any planned maintenance from being completed during this period.
-* **Whether to replicate critical data across partitions**. This strategy can improve availability and performance, although it can also introduce consistency issues. It takes time for changes made to data in a partition to be synchronized with every replica. During this period, different partitions will contain different data values.
+**How critical the data is to business operations**. Identify which data is critical business information, such as transactions, and which data is less critical operational data, such as log files.
 
-## Understanding how partitioning affects design and development
-Using partitioning adds complexity to the design and development of your system. Consider partitioning as a fundamental part of system design even if the system initially only contains a single partition. If you address partitioning as an afterthought, when the system starts to suffer performance and scalability issues, the complexity increases because you already have a live system to maintain.
+* Consider storing critical data in highly-available partitions with an appropriate backup plan.
+* Establish separate management and monitoring procedures for the different datasets. 
+* Place data that has the same level of criticality in the same partition so that it can be backed up together at an appropriate frequency. For example, partitions that hold transaction data might need to be backed up more frequently than partitions that hold logging or trace information.
+
+**How individual partitions can be managed**. Designing partitions to support independent management and maintenance provides several advantages. For example:
+
+* If a partition fails, it can be recovered independently without applications that access data in other partitions.
+* Partitioning data by geographical area allows scheduled maintenance tasks to occur at off-peak hours for each location. Ensure that partitions are not too big to prevent any planned maintenance from being completed during this period.
+
+**Whether to replicate critical data across partitions**. This strategy can improve availability and performance, but can also introduce consistency issues. It takes time to synchronize changes with every replica. During this period, different partitions will contain different data values.
+
+## Understand how partitioning affects design and development
+
+Partitioning adds complexity to the design and development of your system. Consider partitioning as a fundamental part of system design even if the system initially only contains a single partition. If you address partitioning as an afterthought, when the system starts to suffer performance and scalability issues, the complexity increases because you already have a live system to maintain.
 
 If you update the system to incorporate partitioning in this environment, it necessitates modifying the data access logic. It can also involve migrating large quantities of existing data to distribute it across partitions, often while users expect to be able to continue using the system.
 
