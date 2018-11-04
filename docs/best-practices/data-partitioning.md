@@ -57,7 +57,7 @@ Choose a sharding key that minimizes any future requirements to split large shar
 
 If shards are replicated, it might be possible to keep some of the replicas online while others are split, merged, or reconfigured. However, the system might need to limit the operations that can be performed during the reconfiguration. For example, the data in the replicas might be marked as read-only to prevent data inconsistences.
 
-For more informatoun about horizontal partitioning, see [Sharding pattern].
+For more information about horizontal partitioning, see [Sharding pattern].
 
 ### Vertical partitioning
 
@@ -145,7 +145,7 @@ Consider the following factors that affect availability:
 
 ## Application design considerations
 
-Partitioning adds complexity to the design and development of your system. Consider partitioning as a fundamental part of system design even if the system initially only contains a single partition. If you address partitioning as an afterthought, it will be more challending because you already have a live system to maintain:
+Partitioning adds complexity to the design and development of your system. Consider partitioning as a fundamental part of system design even if the system initially only contains a single partition. If you address partitioning as an afterthought, it will be more challenging because you already have a live system to maintain:
 
 - Data access logic will need to be modified. 
 - Large quantities of existing data may need to be migrated, to distribute it across partitions
@@ -180,54 +180,52 @@ All data stores require some operational management and monitoring activity. The
 Consider the following factors that affect operational management:
 
 * **How to implement appropriate management and operational tasks when the data is partitioned**. These tasks might include backup and restore, archiving data, monitoring the system, and other administrative tasks. For example, maintaining logical consistency during backup and restore operations can be a challenge.
-* **How to load the data into multiple partitions and add new data that's arriving from other sources**. Some tools and utilities might not support sharded data operations such as loading data into the correct partition. This means that you might have to create or obtain new tools and utilities.
+* **How to load the data into multiple partitions and add new data that's arriving from other sources**. Some tools and utilities might not support sharded data operations such as loading data into the correct partition. 
 * **How to archive and delete the data on a regular basis**. To prevent the excessive growth of partitions, you need to archive and delete data on a regular basis (perhaps monthly). It might be necessary to transform the data to match a different archive schema.
-* **How to locate data integrity issues**. Consider running a periodic process to locate any data integrity issues such as data in one partition that references missing information in another. The process can either attempt to fix these issues automatically or raise an alert to an operator to correct the problems manually. For example, in an e-commerce application, order information might be held in one partition but the line items that constitute each order might be held in another. The process of placing an order needs to add data to other partitions. If this process fails, there might be line items stored for which there is no corresponding order.
-
-Different data storage technologies typically provide their own features to support partitioning. The following sections summarize the options that are implemented by data stores commonly used by Azure applications. They also describe considerations for designing applications that can best take advantage of these features.
+* **How to locate data integrity issues**. Consider running a periodic process to locate any data integrity issues, such as data in one partition that references missing information in another. The process can either attempt to fix these issues automatically or simply generate a report for manual review. 
 
 ## Rebalancing partitions
-As a system matures and you understand the usage patterns better, you might have to adjust the partitioning scheme. For example, individual partitions might start attracting a disproportionate volume of traffic and become hot, leading to excessive contention. Additionally, you might have underestimated the volume of data in some partitions, causing you to approach the limits of the storage capacity in these partitions. Whatever the cause, it is sometimes necessary to rebalance partitions to spread the load more evenly.
 
-In some cases, data storage systems that don't publicly expose how data is allocated to servers can automatically rebalance partitions within the limits of the resources available. In other situations, rebalancing is an administrative task that consists of two stages:
+As a system matures, you might have to adjust the partitioning scheme. For example, individual partitions might start get a disproportionate volume of traffic and become hot, leading to excessive contention. Or you might have underestimated the volume of data in some partitions, causing some partitions to approach capacity limits. 
 
-1. Determining the new partitioning strategy to ascertain:
-   * Which partitions might need to be split (or possibly combined).
-   * How to allocate data to these new partitions by designing new partition keys.
-2. Migrating the affected data from the old partitioning scheme to the new set of partitions.
+Some data stores, such as Cosmos DB, can automatically rebalance partitions. In other cases, rebalancing is an administrative task that consists of two stages:
 
-> [!NOTE]
-> The mapping of database collections to servers is transparent, but you can still reach the storage capacity and throughput limits of a Cosmos DB account. If this happens, you might need to redesign your partitioning scheme and migrate the data.
->
->
+1. Determine a new partitioning strategy. 
 
-Depending on the data storage technology and the design of your data storage system, you might be able to migrate data between partitions while they are in use (online migration). If this isn't possible, you might need to make the affected partitions temporarily unavailable while the data is relocated (offline migration).
+    - Which partitions need to be split (or possibly combined)? 
+    - What is the new partition key?
 
-## Offline migration
-Offline migration is arguably the simplest approach because it reduces the chances of contention occurring. Don't make any changes to the data while it is being moved and restructured.
+2. Migrate data from the old partitioning scheme to the new set of partitions.
 
-Conceptually, this process includes the following steps:
+Depending on the data store, you might be able to migrate data between partitions while they are in use. This is called *online migration*. If that's not possible, you might need to make partitions unavailable while the data is relocated (*offline migration*).
 
-1. Mark the shard offline.
-2. Split-merge and move the data to the new shards.
+### Offline migration
+
+Offline migration is generally simpler, because it reduces the chances of contention occurring. Conceptually, offline migration works as follows:
+
+1. Mark the partition offline.
+2. Split-merge and move the data to the new partitions.
 3. Verify the data.
-4. Bring the new shards online.
-5. Remove the old shard.
+4. Bring the new partitions online.
+5. Remove the old partition.
 
-To retain some availability, you can mark the original shard as read-only in step 1 rather than making it unavailable. This allows applications to read the data while it is being moved but not to change it.
+Optionally, you can mark a partition as read-only in step 1, so that applications can still read the data while it is being moved.
 
 ## Online migration
-Online migration is more complex to perform but less disruptive to users because data remains available during the entire procedure. The process is similar to that used by offline migration, except that the original shard is not marked offline (step 1). Depending on the granularity of the migration process (for example, whether it's done item by item or shard by shard), the data access code in the client applications might have to handle reading and writing data that's held in two locations (the original shard and the new shard).
 
-For an example of a solution that supports online migration, see the article [Scaling using the Elastic Database split-merge tool] on the Microsoft website.
+Online migration is more complex to perform but less disruptive. The process is similar to offline migration, except the original partition is not marked offline. Depending on the granularity of the migration process (for example, item by item versus shard by shard), the data access code in the client applications might have to handle reading and writing data that's held in two locations, the original partition and the new partition.
 
 ## Related patterns 
 
 The following design patterns might be relevant to your scenario:
 
-* The [[sharding pattern] desribes some common strategies for sharding data.
+* The [[sharding pattern] describes some common strategies for sharding data.
 * The [index table pattern] shows how to create secondary indexes over data. An application can quickly retrieve data with this approach, by using queries that do not reference the primary key of a collection.
 * The [materialized view pattern] describes how to generate pre-populated views that summarize data to support fast query operations. This approach can be useful in a partitioned data store if the partitions that contain the data being summarized are distributed across multiple sites.
+
+## Next steps
+
+- Learn about partitioning strategies for specific Azure services. See [Data partitioning strategies](./data-partitioning-strategies.md)
 
 [Availability and consistency in Event Hubs]: /azure/event-hubs/event-hubs-availability-and-consistency
 [azure-limits]: /azure/azure-subscription-service-limits
